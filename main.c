@@ -1,43 +1,82 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void greetUser() {
-	printf("\n*********************\n");
-	printf("TODO CLI by GasSpace");
-	printf("\n*********************\n");
-}
+typedef struct {
+	int id;
+	char *title;
+} Task;
 
-void createTask();
+typedef struct {
+	int size;
+	int taskCount;
+	Task *tasks;
+} TaskList;
+
+void greetUser();
+void addTask(TaskList *ls, char *title);
+void displayTasks(TaskList *list);
 void toggleTask();
 void editTask();
 void deleteTask();
 void clearData();
 
 int main() {
+
 	greetUser();
 
-	FILE* file = fopen("task.txt", "w");
-	char data[100];
-	if (file == NULL) {
-		printf("ERROR! : No file detected\n");
-		return 0;
-	}
-	printf("File created successfully!\n");
-	fputs("Some tasks for you boiiii\n", file);
-	printf("written to file\n");
+	TaskList list;
+	list.size = 10;
+	list.taskCount = 0;
+	list.tasks = malloc(list.size * sizeof(Task));
 
-	fclose(file);
+	char task[255];
 
-	file = fopen("task.txt", "r");
-	if (file == NULL) {
-		printf("ERROR! : No file detected\n");
-		return 0;
-	}
-	printf("Contents of file:\n");
-	while(fgets(data, 100, file)) {
-		printf("%s", data);
-	}
+	printf("Add a new Task: ");
+	scanf("%s", task);
+	addTask(&list, task);
 
-	fclose(file);
+	displayTasks(&list);
+
+	free(list.tasks);
 
 	return 0;
+}
+
+void addTask(TaskList *ls, char *title) {
+	if (ls->taskCount == ls->size) {
+		int new_size = ls->size + 10;
+		Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
+		if (tmp == NULL) {
+			printf("ERROR: realloc failed!\n");
+			return;
+		}
+		ls->tasks = tmp;
+		ls->size = new_size;
+	}
+
+	Task newTask;
+	newTask.id = ls->taskCount;
+	newTask.title = malloc(strlen(title) + 1);
+	if (newTask.title == NULL) {
+		printf("ERROR: malloc for new task failed!\n");
+		return;
+	}
+	strcpy(newTask.title, title);
+	ls->tasks[ls->taskCount] = newTask;
+	ls->taskCount++;
+
+	printf("Task Added! : %s\n", title);
+}
+
+void displayTasks(TaskList *list) {
+	for (int i = 0; i < list->taskCount; i++) {
+		printf("%s\n", list->tasks[i].title);
+	}
+}
+
+void greetUser() {
+	printf("\n************************\n");
+	printf("\tTODO CLI");
+	printf("\n************************\n");
 }

@@ -1,4 +1,2 @@
-# My CLI Todo app
-I'm making this to learn stuff
-
-> This is a minimal TODO CLI.
+# Todo CLI
+> I'm making this to learn C and software development.
