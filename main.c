@@ -110,6 +110,7 @@ int main() {
 }
 
 void addTask(TaskList *ls, char *title) {
+	// TODO: Check if emply
 	if (ls->taskCount == ls->size) {
 		int new_size = ls->size + 10;
 		Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
@@ -201,6 +202,12 @@ void deleteTask(TaskList *ls, int id) {
 }
 
 void editTask(TaskList *ls, int id, char *new_title) {
+	char *og_title = malloc(strlen(ls->tasks[id].title) + 1);
+	if (og_title == NULL) {
+		printf("ERROR: malloc edit task failed! (tmp title)");
+		return;
+	}
+	strcpy(og_title, ls->tasks[id].title);
 	char *tmp = realloc(ls->tasks[id].title, strlen(new_title) + 1);
 	if (tmp == NULL) {
 		printf("ERROR: realloc task edit failed!\n");
@@ -208,7 +215,8 @@ void editTask(TaskList *ls, int id, char *new_title) {
 	}
 	ls->tasks[id].title = tmp;
 	strcpy(ls->tasks[id].title, new_title);
-	// TODO: responce
+	og_title[strcspn(og_title, "\n")] = '\0';
+	printf("Task Edited: %s -> %s", og_title, new_title);
 }
 
 void clearData(TaskList *ls) {
