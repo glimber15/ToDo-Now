@@ -18,14 +18,17 @@ typedef struct {
 // Print a heading with a box border `dec`
 void printH(char *text, char dec);
 
-void addTask(TaskList *ls, int id, char *title);
+void addTask(TaskList *ls, char *title);
 void displayTasks(TaskList *list);
 void displayHelp();
 void toggleTask(TaskList *ls, int id);
 void deleteTask(TaskList *ls, int id);
 
-void editTask();
+void editTask(TaskList *ls, int id, char *new_title);
 void clearData();
+// TODO: Free the taskList and Task objects
+void freeTaskMemory(TaskList *ls);
+int checkTaskExist(TaskList *ls, int id);
 
 int main() {
 	// User action input
@@ -57,7 +60,7 @@ int main() {
 		if (usrInput == 'A' || usrInput == 'a') {
 			printf("Add Task: ");
 			fgets(task, sizeof(task), stdin);
-			addTask(&list, list.taskCount, task);
+			addTask(&list, task);
 		}
 		else if (usrInput == 'S' || usrInput == 's') {
 			displayTasks(&list);
@@ -72,6 +75,16 @@ int main() {
 			toggleTask(&list, id);
 			getchar();
 		}
+		else if (usrInput == 'E' || usrInput == 'e') {
+			int id = 0;
+			printf("Enter task ID:\n> ");
+			scanf("%d", &id);
+			getchar();
+			if (!checkTaskExist(&list, id)) continue;
+			printf("Edit Task: ");
+			fgets(task, sizeof(task), stdin);
+			editTask(&list, id, task);
+		}
 		else if (usrInput == 'D' || usrInput == 'd') {
 			int id = 0;
 			printf("Enter task ID:\n> ");
@@ -84,7 +97,7 @@ int main() {
 			break;
 		}
 		else {
-			printf("Undifined input: Use H for help.\n");
+			printf("Undifined input: Type \'H\' for help.\n");
 		}
 	}
 
@@ -93,12 +106,12 @@ int main() {
 	return 0;
 }
 
-void addTask(TaskList *ls, int id, char *title) {
+void addTask(TaskList *ls, char *title) {
 	if (ls->taskCount == ls->size) {
 		int new_size = ls->size + 10;
 		Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
 		if (tmp == NULL) {
-			printf("ERROR: realloc task list failed!\n");
+			printf("ERROR: realloc new task failed!\n");
 			return;
 		}
 		ls->tasks = tmp;
@@ -117,7 +130,7 @@ void addTask(TaskList *ls, int id, char *title) {
 	ls->tasks[ls->taskCount] = newTask;
 	ls->taskCount++;
 
-	printf("Task Added! : [%d] %s\n", id, title);
+	printf("Task Added! : [%d] %s\n", ls->taskCount, title);
 }
 
 void displayTasks(TaskList *ls) {
@@ -144,28 +157,30 @@ void displayTasks(TaskList *ls) {
 	}
 }
 
-void toggleTask(TaskList *ls, int id) {
+int checkTaskExist(TaskList *ls, int id) {
 	if (ls->taskCount == 0) {
 		printf("You have no tasks.\n");
-		return;
+		return 0;
 	}
 	if (id >= ls->taskCount) {
 		printf("Task does not exist. Use \'S\' to show tasks.\n");
-		return;
+		return 0;
 	}
+	return 1;
+}
+
+void toggleTask(TaskList *ls, int id) {
+	if (!checkTaskExist(ls, id)) return;
+
 	// flip b/w 0 and 1
 	ls->tasks[id].state = !ls->tasks[id].state;
+	// TODO: responce
 }
 
 void deleteTask(TaskList *ls, int id) {
-	if (ls->taskCount == 0) {
-		printf("You have no tasks.\n");
-		return;
-	}
-	if (id >= ls->taskCount) {
-		printf("Task does not exist. Use \'S\' to show tasks.\n");
-		return;
-	}
+	if (!checkTaskExist(ls, id)) return;
+
+	char *task = ls->tasks[id].title;
 	for (int i = 0; i < ls->size - 1; i++) {
 		ls->tasks[i] = ls->tasks[i + 1];
 		ls->tasks[i].id--;
@@ -173,12 +188,24 @@ void deleteTask(TaskList *ls, int id) {
 	int new_size = ls->size--;
 	Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
 	if (tmp == NULL) {
-		printf("ERROR: realloc task list failed!\n");
+		printf("ERROR: realloc task delete failed!\n");
 		return;
 	}
 	ls->tasks = tmp;
 	ls->size = new_size;
 	ls->taskCount--;
+	printf("Task Deleted: [%d] : %s", id, task);
+}
+
+void editTask(TaskList *ls, int id, char *new_title) {
+	char *tmp = realloc(ls->tasks[id].title, strlen(new_title) + 1);
+	if (tmp == NULL) {
+		printf("ERROR: realloc task edit failed!\n");
+		return;
+	}
+	ls->tasks[id].title = tmp;
+	strcpy(ls->tasks[id].title, new_title);
+	// TODO: responce
 }
 
 void displayHelp() {
@@ -188,6 +215,7 @@ void displayHelp() {
 	printf("A : Add a new task.\n");
 	printf("S : Show tasks.\n");
 	printf("C : Toggle task.\n");
+	printf("E : Edit task.\n");
 	printf("D : Delete task.\n");
 }
 
