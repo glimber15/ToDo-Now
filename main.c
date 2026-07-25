@@ -23,12 +23,12 @@ void displayTasks(TaskList *list);
 void displayHelp();
 void toggleTask(TaskList *ls, int id);
 void deleteTask(TaskList *ls, int id);
-
 void editTask(TaskList *ls, int id, char *new_title);
-void clearData();
+void clearData(TaskList *ls);
 // TODO: Free the taskList and Task objects
 void freeTaskMemory(TaskList *ls);
 int checkTaskExist(TaskList *ls, int id);
+int confirm(char *dialog);
 
 int main() {
 	// User action input
@@ -91,6 +91,9 @@ int main() {
 			scanf("%d", &id);
 			deleteTask(&list, id);
 			getchar();
+		}
+		else if (usrInput == 'X' || usrInput == 'x') {
+			if (confirm("Clear all Data: ")) clearData(&list);
 		}
 		else if (usrInput == 'Q' || usrInput == 'q') {
 			printf("Bay :)\n");
@@ -208,6 +211,18 @@ void editTask(TaskList *ls, int id, char *new_title) {
 	// TODO: responce
 }
 
+void clearData(TaskList *ls) {
+	Task *tmp = realloc(ls->tasks, sizeof(Task));
+	if (tmp == NULL) {
+		printf("ERROR: realloc task clear failed!\n");
+		return;
+	}
+	ls->tasks = tmp;
+	ls->size = 10;
+	ls->taskCount = 0;
+	printf("Task Data Cleared!\n");
+}
+
 void displayHelp() {
 	printH("Helps", '-');
 	printf("H : Show this again.\n");
@@ -241,4 +256,18 @@ void printH(char *text, char dec) {
 	printf("\n");
 	for (int i = 0; i <= r_len; i++) printf("%c", dec);
 	printf("\n");
+}
+
+int confirm(char *dialog) {
+	char input;
+	printf("%s", dialog);
+	printf("(Y/N)?");
+	scanf("%c", &input);
+	getchar();
+	if (input == 'Y' || input == 'y') return 1;
+	else if (input == 'N' || input == 'n') return 0;
+	else {
+		printf("Undifined input: Type \'H\' for help.\n");
+		return 0;
+	}
 }
