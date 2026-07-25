@@ -14,11 +14,12 @@ typedef struct {
 	Task *tasks;
 } TaskList;
 
-void greetUser();
+void printH(char *text, char dec);
 void addTask(TaskList *ls, int id, char *title);
 void displayTasks(TaskList *list);
 void displayHelp();
 void toggleTask(TaskList *ls, int id);
+
 void editTask();
 void deleteTask();
 void clearData();
@@ -32,7 +33,7 @@ int main() {
 	list.taskCount = 0;
 	list.tasks = malloc(list.size * sizeof(Task));
 
-	greetUser();
+	printH("TODO CLI", '=');
 
 	if (list.tasks == NULL) {
 		printf("ERROR: malloc task list failed!");
@@ -49,7 +50,7 @@ int main() {
 		scanf("%c", &usrInput);
 		while (getchar() != '\n');
 		if (usrInput == 'A' || usrInput == 'a') {
-			printf("Add a new Task: ");
+			printf("Add Task: ");
 			fgets(task, sizeof(task), stdin);
 			addTask(&list, list.taskCount, task);
 		}
@@ -116,7 +117,7 @@ void displayTasks(TaskList *ls) {
 		return;
 	}
 
-	printf("  TASKS\n---------\n");
+	printH("Tasks", '-');
 	char state = ' ';
 	for (int i = 0; i < ls->taskCount; i++) {
 		switch (ls->tasks[i].state) {
@@ -149,16 +150,34 @@ void toggleTask(TaskList *ls, int id) {
 }
 
 void displayHelp() {
-	printf("  HELP\n--------\n");
-	printf("> H : Show this again.\n");
-	printf("> Q : Quit.\n");
-	printf("> A : Add a new task.\n");
-	printf("> S : Show tasks.\n");
-	printf("> C : Toggle task.\n");
+	printH("Helps", '-');
+	printf("H : Show this again.\n");
+	printf("Q : Quit.\n");
+	printf("A : Add a new task.\n");
+	printf("S : Show tasks.\n");
+	printf("C : Toggle task.\n");
 }
 
-void greetUser() {
-	printf("\n************************\n");
-	printf("\tTODO CLI");
-	printf("\n************************\n");
+void printH(char *text, char dec) {
+	int t_len = 0;
+	int r_len = 0;
+	int spacing = 0;
+	while (text[t_len] != '\0') {
+		t_len++;
+	}
+	r_len = (t_len * 4) + 1;
+	spacing = (r_len/2) - (t_len/2);
+	if (t_len % 2 != 0) r_len += 1;
+	char ruler[r_len];
+
+	for (int i = 0; i <= r_len; i++) printf("%c", dec);
+	printf("\n");
+	printf("%c", dec);
+	for (int i = 0; i < spacing; i++) printf(" ");
+	printf("%s", text);
+	for (int i = 0; i < spacing; i++) printf(" ");
+	printf("%c", dec);
+	printf("\n");
+	for (int i = 0; i <= r_len; i++) printf("%c", dec);
+	printf("\n");
 }
