@@ -5,6 +5,7 @@
 typedef struct {
 	int id;
 	char *title;
+	int state;
 } Task;
 
 typedef struct {
@@ -14,41 +15,80 @@ typedef struct {
 } TaskList;
 
 void greetUser();
-void addTask(TaskList *ls, char *title);
+void addTask(TaskList *ls, int id, char *title);
 void displayTasks(TaskList *list);
-void toggleTask();
+void displayHelp();
+void toggleTask(TaskList *ls, int id);
 void editTask();
 void deleteTask();
 void clearData();
 
 int main() {
-
-	greetUser();
-
+	// User action input
+	char usrInput = ' ';
+	// Task List
 	TaskList list;
 	list.size = 10;
 	list.taskCount = 0;
 	list.tasks = malloc(list.size * sizeof(Task));
 
+	greetUser();
+
+	if (list.tasks == NULL) {
+		printf("ERROR: malloc task list failed!");
+		return 1;
+	}
+
+	// TODO: dynamic memory?
 	char task[255];
 
-	printf("Add a new Task: ");
-	scanf("%s", task);
-	addTask(&list, task);
+	displayHelp();
 
-	displayTasks(&list);
+	while (1) {
+		printf("> ");
+		scanf("%c", &usrInput);
+		while (getchar() != '\n');
+		if (usrInput == 'A' || usrInput == 'a') {
+			printf("Add a new Task: ");
+			fgets(task, sizeof(task), stdin);
+			addTask(&list, list.taskCount, task);
+		}
+		else if (usrInput == 'S' || usrInput == 's') {
+			displayTasks(&list);
+		}
+		else if (usrInput == 'H' || usrInput == 'h') {
+			displayHelp();
+		}
+		else if (usrInput == 'Q' || usrInput == 'q') {
+			printf("Bay! :)\n");
+			break;
+		}
+		else if (usrInput == 'C' || usrInput == 'c') {
+			if (list.taskCount == 0) {
+				printf("You have no tasks.\n");
+				continue;
+			}
+			int id = 0;
+			printf("Enter task ID:\n> ");
+			fgets(task, sizeof(task), stdin);
+			toggleTask(&list, id);
+		}
+		else {
+			printf("Undifined input: Use H for help.\n");
+		}
+	}
 
 	free(list.tasks);
 
 	return 0;
 }
 
-void addTask(TaskList *ls, char *title) {
+void addTask(TaskList *ls, int id, char *title) {
 	if (ls->taskCount == ls->size) {
 		int new_size = ls->size + 10;
 		Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
 		if (tmp == NULL) {
-			printf("ERROR: realloc failed!\n");
+			printf("ERROR: realloc task list failed!\n");
 			return;
 		}
 		ls->tasks = tmp;
@@ -57,6 +97,7 @@ void addTask(TaskList *ls, char *title) {
 
 	Task newTask;
 	newTask.id = ls->taskCount;
+	newTask.state = 0;
 	newTask.title = malloc(strlen(title) + 1);
 	if (newTask.title == NULL) {
 		printf("ERROR: malloc for new task failed!\n");
@@ -66,13 +107,54 @@ void addTask(TaskList *ls, char *title) {
 	ls->tasks[ls->taskCount] = newTask;
 	ls->taskCount++;
 
-	printf("Task Added! : %s\n", title);
+	printf("Task Added! : [%d] %s\n", id, title);
 }
 
-void displayTasks(TaskList *list) {
-	for (int i = 0; i < list->taskCount; i++) {
-		printf("%s\n", list->tasks[i].title);
+void displayTasks(TaskList *ls) {
+	if (ls->taskCount <= 0) {
+		printf("You have no tasks.\n");
+		return;
 	}
+
+	printf("  TASKS\n---------\n");
+	char state = ' ';
+	for (int i = 0; i < ls->taskCount; i++) {
+		switch (ls->tasks[i].state) {
+			case 0:
+				state = ' ';
+				break;
+			case 1:
+				state = '#';
+				break;
+			default:
+				state = '.';
+				break;
+		}
+		printf("%d[ %c ] %s", ls->tasks[i].id, state, ls->tasks[i].title);
+	}
+}
+
+void toggleTask(TaskList *ls, int id) {
+	printf("size: %d\n", ls->taskCount);
+	printf("%d", id);
+	if (id > ls->taskCount) {
+		printf("Task does not exist. Use \'S\' to show tasks.\n");
+		return;
+	}
+	else {
+		// flip b/w 0 and 1
+		ls->tasks[id].state = !ls->tasks[id].state;
+	}
+
+}
+
+void displayHelp() {
+	printf("  HELP\n--------\n");
+	printf("> H : Show this again.\n");
+	printf("> Q : Quit.\n");
+	printf("> A : Add a new task.\n");
+	printf("> S : Show tasks.\n");
+	printf("> C : Toggle task.\n");
 }
 
 void greetUser() {
