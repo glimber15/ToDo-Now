@@ -3,11 +3,10 @@
 #include <string.h>
 
 #include "tasks.h"
+#include "file.h"
 
 FILE *t_file;
 
-
-char *readLine(char *buffer, size_t *size, FILE *stream);
 void freeTaskMemory(TaskList *ls);
 
 int main() {
@@ -41,14 +40,8 @@ int main() {
 		if (usrInput == 'A' || usrInput == 'a') {
 			printf("Add Task: ");
 			task = readLine(task, &task_input_size, stdin);
-			t_file = fopen("tasks.txt", "a");
-			if (t_file == NULL) {
-				perror("file append");
-				return 1;
-			}
-			fprintf(t_file, "%s", task);
-			fclose(t_file);
 			addTask(&list, task);
+			formatFile(t_file, &list);
 		}
 		else if (usrInput == 'S' || usrInput == 's') {
 			displayTasks(&list);
@@ -61,6 +54,7 @@ int main() {
 			printf("Enter task ID:\n> ");
 			scanf("%d", &id);
 			toggleTask(&list, id);
+			formatFile(t_file, &list);
 			getchar();
 		}
 		else if (usrInput == 'E' || usrInput == 'e') {
@@ -72,16 +66,21 @@ int main() {
 			printf("Edit Task: ");
 			fgets(task, sizeof(task), stdin);
 			editTask(&list, id, task);
+			formatFile(t_file, &list);
 		}
 		else if (usrInput == 'D' || usrInput == 'd') {
 			int id = 0;
 			printf("Enter task ID:\n> ");
 			scanf("%d", &id);
 			deleteTask(&list, id);
+			formatFile(t_file, &list);
 			getchar();
 		}
 		else if (usrInput == 'X' || usrInput == 'x') {
-			if (confirm("Clear all Data: ")) clearData(&list);
+			if (confirm("Clear all Data: ")) {
+				clearData(&list);
+				formatFile(t_file, &list);
+			}
 		}
 		else if (usrInput == 'Q' || usrInput == 'q') {
 			printf("Bay :)\n");

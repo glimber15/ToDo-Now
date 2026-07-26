@@ -5,9 +5,26 @@
 #include "tasks.h"
 
 void formatFile(FILE *file, TaskList *ls) {
-	size_t buffer_size = 8;
-	char *buffer = malloc(buffer_size);
+	char state = ' ';
 	file = fopen("tasks.txt", "w");
-	// TDOD: make the file from `ls`
+	if (file == NULL) {
+		perror("file format, creation");
+		return;
+	}
+	// TODO: format after checking/toggling, deleting, editing
+	for (int i = 0; i < ls->taskCount; i++) {
+		switch (ls->tasks[i].state) {
+			case 0:
+				state = ' ';
+				break;
+			case 1:
+				state = '#';
+				break;
+			default:
+				state = '.';
+				break;
+		}
+		fprintf(file, "%d [%c] %s", ls->tasks[i].id, state, ls->tasks[i].title);
+	}
 	fclose(file);
 }

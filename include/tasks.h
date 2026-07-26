@@ -1,6 +1,9 @@
 #ifndef TASKS_H
 #define TASKS_H
 
+#include <stddef.h>
+#include <stdio.h>
+
 typedef struct {
 	int id;
 	char *title;
@@ -20,6 +23,7 @@ void deleteTask(TaskList *ls, int id);
 void editTask(TaskList *ls, int id, char *new_title);
 void clearData(TaskList *ls);
 
+char *readLine(char *buffer, size_t *size, FILE *stream);
 void printH(char *text, char dec);
 void displayHelp();
 int checkTaskExist(TaskList *ls, int id);

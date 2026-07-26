@@ -141,7 +141,6 @@ char *readLine(char *buffer, size_t *size, FILE *stream) {
 	while (fgets(buffer + len, *size - len, stream)) {
 		len += strlen(buffer + len);
 		if (len > 0 && buffer[len - 1] == '\n') {
-			buffer[len - 1] = '\0';
 			break;
 		}
 		*size *= 2;
