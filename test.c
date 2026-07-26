@@ -1,31 +1,55 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
-void printH(char *text, char dec) {
-	int t_len = 0;
-	int r_len = 0;
-	int spacing = 0;
-	while (text[t_len] != '\0') {
-		t_len++;
+FILE *file;
+
+char *readLine(char *buffer, size_t *size, FILE *stream) {
+	size_t len = 0;
+	while (fgets(buffer + len, *size - len, stream)) {
+		len += strlen(buffer + len);
+		if (len > 0 && buffer[len - 1] == '\n') {
+			buffer[len - 1] = '\0';
+			break;
+		}
+		*size *= 2;
+		char *tmp = realloc(buffer, *size);
+		if (tmp == NULL) {
+			perror("realloc buffer");
+			free(tmp);
+			return NULL;
+		}
+		buffer = tmp;
 	}
-	r_len = (t_len * 4) + 1;
-	spacing = (r_len/2) - (t_len/2);
-	if (t_len % 2 != 0) r_len += 1;
-	char ruler[r_len];
-
-	for (int i = 0; i <= r_len; i++) printf("%c", dec);
-	printf("\n");
-	printf("%c", dec);
-	for (int i = 0; i < spacing; i++) printf(" ");
-	printf("%s", text);
-	for (int i = 0; i < spacing; i++) printf(" ");
-	printf("%c", dec);
-	printf("\n");
-	for (int i = 0; i <= r_len; i++) printf("%c", dec);
-	printf("\n");
+	return buffer;
 }
 
 int main() {
-	printH("Hello0", '#');
+	file = fopen("test.txt", "w");
+	size_t buffer_size = 8;
+	char *buffer = malloc(buffer_size);
+	size_t input_size = 8;
+	char *input= malloc(input_size);
+
+	if (file == NULL) {
+		perror("file creation\n");
+		return 1;
+	}
+
+	printf("Enter somenthing: ");
+	input = readLine(input, &input_size, stdin);
+	fprintf(file, "%s", input);
+	printf("created a file!\n");
+	fclose(file);
+
+	file = fopen("test.txt", "r");
+
+	buffer = readLine(buffer, &buffer_size, file);
+	printf("[%s]", buffer);
+
+	fclose(file);
+	free(buffer);
+	free(input);
 
 	return 0;
 }

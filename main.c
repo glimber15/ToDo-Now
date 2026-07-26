@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+FILE *t_file;
+
 typedef struct {
 	int id;
 	char *title;
@@ -26,6 +28,7 @@ void deleteTask(TaskList *ls, int id);
 void editTask(TaskList *ls, int id, char *new_title);
 void clearData(TaskList *ls);
 // TODO: Free the taskList and Task objects
+char *readLine(char *buffer, size_t *size, FILE *stream);
 void freeTaskMemory(TaskList *ls);
 int checkTaskExist(TaskList *ls, int id);
 int confirm(char *dialog);
@@ -240,6 +243,26 @@ void displayHelp() {
 	printf("C : Toggle task.\n");
 	printf("E : Edit task.\n");
 	printf("D : Delete task.\n");
+}
+
+char *readLine(char *buffer, size_t *size, FILE *stream) {
+	size_t len = 0;
+	while (fgets(buffer + len, *size - len, stream)) {
+		len += strlen(buffer + len);
+		if (len > 0 && buffer[len - 1] == '\n') {
+			buffer[len - 1] = '\0';
+			break;
+		}
+		*size *= 2;
+		char *tmp = realloc(buffer, *size);
+		if (tmp == NULL) {
+			perror("realloc buffer");
+			free(tmp);
+			return NULL;
+		}
+		buffer = tmp;
+	}
+	return buffer;
 }
 
 void printH(char *text, char dec) {
