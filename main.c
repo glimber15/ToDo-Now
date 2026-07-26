@@ -28,7 +28,8 @@ int main() {
 
 	// TODO: dynamic memory?
 	// used to get the task title when adding it
-	char *task = malloc(100);
+	size_t task_input_size = 8;
+	char *task = malloc(task_input_size);
 
 	displayHelp();
 
@@ -39,7 +40,14 @@ int main() {
 		while (getchar() != '\n');
 		if (usrInput == 'A' || usrInput == 'a') {
 			printf("Add Task: ");
-			fgets(task, sizeof(task), stdin);
+			task = readLine(task, &task_input_size, stdin);
+			t_file = fopen("tasks.txt", "a");
+			if (t_file == NULL) {
+				perror("file append");
+				return 1;
+			}
+			fprintf(t_file, "%s", task);
+			fclose(t_file);
 			addTask(&list, task);
 		}
 		else if (usrInput == 'S' || usrInput == 's') {

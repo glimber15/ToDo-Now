@@ -1,1 +1,18 @@
-[]
+[
+  {
+    "file": "main.c",
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-std=c17",
+      "-Iinclude",
+      "-c",
+      "main.c",
+      "-o",
+      "main.o"
+    ],
+    "directory": "/home/gassy/C/projects/My-TODO-CLI",
+    "output": "main.o"
+  }
+]

@@ -1,7 +1,7 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c17 -Iinclude
 
-SRC = main.c src/*.c
+SRC = main.c $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
 app: $(OBJ)
