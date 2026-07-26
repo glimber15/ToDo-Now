@@ -1,7 +1,6 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-
 typedef struct {
 	int id;
 	char *title;
