@@ -2,8 +2,8 @@
 #define FILE_H
 
 #include "tasks.h"
-#include <stdio.h>
 
-void formatFile(FILE *file, TaskList *ls);
+void formatFile(char *file_name, TaskList *ls);
+void createTaskList(char *file_name, TaskList *ls);
 
 #endif
