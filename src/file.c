@@ -61,7 +61,11 @@ void createTaskList(char *file_name, TaskList *ls) {
 		size_t len;
 
 		// title length
-		fread(&len, sizeof(len), 1, file);
+		if (fread(&len, sizeof(len), 1, file) != 1) {
+			fclose(file);
+			perror("read task title length");
+			return;
+		}
 		ls->tasks[i].title = malloc(len);
 		if (ls->tasks[i].title == NULL) {
 			fclose(file);
@@ -69,9 +73,17 @@ void createTaskList(char *file_name, TaskList *ls) {
 			return;
 		}
 		// title
-		fread(ls->tasks[i].title, 1, len, file);
+		if (fread(ls->tasks[i].title, 1, len, file) != len) {
+			fclose(file);
+			perror("read task title");
+			return;
+		}
 		// state
-		fread(&ls->tasks[i].state, sizeof(ls->tasks[i].state), 1, file);
+		if (fread(&ls->tasks[i].state, sizeof(ls->tasks[i].state), 1, file) != 1) {
+			fclose(file);
+			perror("read task state");
+			return;
+		}
 		// id
 		ls->tasks[i].id = i;
 	}
