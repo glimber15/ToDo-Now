@@ -13,9 +13,12 @@ int main() {
 	char usrInput = ' ';
 	// Task List
 	TaskList list;
-	list.size = 10;
-	list.taskCount = 0;
-	list.tasks = malloc(list.size * sizeof(Task));
+	createTaskList(file, &list);
+	if (list.taskCount <= 0) {
+		list.size = 10;
+		list.taskCount = 0;
+		list.tasks = malloc(list.size * sizeof(Task));
+	}
 
 	printH("TODO CLI", '=');
 
@@ -40,7 +43,7 @@ int main() {
 			printf("Add Task: ");
 			task = readLine(task, &task_input_size, stdin);
 			addTask(&list, task);
-			formatFile(file, &list);
+			saveTaskList(file, &list);
 		}
 		else if (usrInput == 'S' || usrInput == 's') {
 			displayTasks(&list);
@@ -53,7 +56,7 @@ int main() {
 			printf("Enter task ID:\n> ");
 			scanf("%d", &id);
 			toggleTask(&list, id);
-			formatFile(file, &list);
+			saveTaskList(file, &list);
 			getchar();
 		}
 		else if (usrInput == 'E' || usrInput == 'e') {
@@ -65,20 +68,20 @@ int main() {
 			printf("Edit Task: ");
 			fgets(task, sizeof(task), stdin);
 			editTask(&list, id, task);
-			formatFile(file, &list);
+			saveTaskList(file, &list);
 		}
 		else if (usrInput == 'D' || usrInput == 'd') {
 			int id = 0;
 			printf("Enter task ID:\n> ");
 			scanf("%d", &id);
 			deleteTask(&list, id);
-			formatFile(file, &list);
+			saveTaskList(file, &list);
 			getchar();
 		}
 		else if (usrInput == 'X' || usrInput == 'x') {
 			if (confirm("Clear all Data: ")) {
 				clearData(&list);
-				formatFile(file, &list);
+				saveTaskList(file, &list);
 			}
 		}
 		else if (usrInput == 'Q' || usrInput == 'q') {
