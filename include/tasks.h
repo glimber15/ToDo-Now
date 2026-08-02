@@ -3,6 +3,7 @@
 
 #include <stddef.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 typedef struct {
 	int id;
@@ -26,13 +27,17 @@ void clearData(TaskList *ls);
 
 // file
 void saveTaskList(char *file_name, TaskList *ls);
-TaskList createTaskList(char *file_name);
+void createTaskList(char *file_name, TaskList *ls);
 
 // helper
+void initTasks(char *file);
 char *readLine(char *buffer, size_t *size, FILE *stream);
-void printH(char *text, char dec);
+void printHead(char *text, char dec);
+void printHelp();
 void displayHelp();
-int checkTaskExist(TaskList *ls, int id);
-int confirm(char *dialog);
+bool checkTaskExist(TaskList *ls, int id);
+bool confirm(char *dialog);
+
+extern TaskList list;
 
 #endif

@@ -2,13 +2,29 @@
 #include <string.h>
 
 #include "tasks.h"
+TaskList list;
 
-void initTasks() {
-	
+void initTasks(char *file) {
+	createTaskList(file, &list);
+	if (list.taskCount <= 0) {
+		list.size = 10;
+		list.taskCount = 0;
+		list.tasks = malloc(list.size * sizeof(Task));
+	}
+
+	if (list.tasks == NULL) {
+		printf("ERROR: malloc task list failed!");
+		exit(-1);
+	}
+}
+
+// TODO: find out for witch the user needs help and display result accordingly
+void printHelp() {
+	printf("Usage: task <operation>");
 }
 
 void displayHelp() {
-	printH("Helps", '-');
+	printHead("Helps", '-');
 	printf("H : Show this again.\n");
 	printf("Q : Quit.\n");
 	printf("A : Add a new task.\n");
@@ -37,7 +53,7 @@ char *readLine(char *buffer, size_t *size, FILE *stream) {
 	return buffer;
 }
 
-void printH(char *text, char dec) {
+void printHead(char *text, char dec) {
 	int t_len = 0;
 	int r_len = 0;
 	int spacing = 0;
@@ -60,16 +76,30 @@ void printH(char *text, char dec) {
 	printf("\n");
 }
 
-int confirm(char *dialog) {
+bool checkTaskExist(TaskList *ls, int id) {
+	if (ls->taskCount == 0) {
+		printf("You have no tasks.\n");
+		return false;
+	}
+	if (id >= ls->taskCount) {
+		printf("Task does not exist. Use \'S\' to show tasks.\n");
+		return false;
+	}
+	return true;
+}
+
+bool confirm(char *dialog) {
 	char input;
 	printf("%s", dialog);
 	printf("(Y/N)?");
 	scanf("%c", &input);
 	getchar();
-	if (input == 'Y' || input == 'y') return 1;
-	else if (input == 'N' || input == 'n') return 0;
+	if (input == 'Y' || input == 'y')
+		return true;
+	else if (input == 'N' || input == 'n')
+		return false;
 	else {
 		printf("Undifined input: Type \'H\' for help.\n");
-		return 0;
+		return false;
 	}
 }

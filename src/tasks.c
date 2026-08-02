@@ -40,7 +40,7 @@ void displayTasks(TaskList *ls) {
 		return;
 	}
 
-	printH("Tasks", '-');
+	printHead("Tasks", '-');
 	char state = ' ';
 	for (int i = 0; i < ls->taskCount; i++) {
 		switch (ls->tasks[i].state) {
@@ -56,18 +56,6 @@ void displayTasks(TaskList *ls) {
 		}
 		printf("%d [ %c ] : %s", ls->tasks[i].id, state, ls->tasks[i].title);
 	}
-}
-
-int checkTaskExist(TaskList *ls, int id) {
-	if (ls->taskCount == 0) {
-		printf("You have no tasks.\n");
-		return 0;
-	}
-	if (id >= ls->taskCount) {
-		printf("Task does not exist. Use \'S\' to show tasks.\n");
-		return 0;
-	}
-	return 1;
 }
 
 void toggleTask(TaskList *ls, int id) {
