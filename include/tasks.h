@@ -22,6 +22,7 @@ void addTask(TaskList *ls, char *title);
 void displayTasks(TaskList *list);
 void toggleTask(TaskList *ls, int id);
 void deleteTask(TaskList *ls, int id);
+void deleteCheckedTasks(TaskList *ls);
 void editTask(TaskList *ls, int id, char *new_title);
 void clearData(TaskList *ls);
 

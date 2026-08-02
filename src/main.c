@@ -75,10 +75,16 @@ int main(int argc, char **argv) {
 		}
 		printHelp();
 	}
+	else if (strcmp(argv[1], "dc") == 0) {
+		deleteCheckedTasks(&list);
+		saveTaskList(file, &list);
+		return 0;
+	}
 	else if (strcmp(argv[1], "x") == 0) {
 		if (confirm("Clear all Data: ")) {
 			clearData(&list);
 			saveTaskList(file, &list);
+			return 0;
 		}
 	}
 	else printHelp();

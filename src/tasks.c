@@ -63,16 +63,14 @@ void toggleTask(TaskList *ls, int id) {
 	ls->tasks[id].state = !ls->tasks[id].state;
 	
 	if (ls->tasks[id].state)
-		printf("Task Completed: [%d] %s\n", id, ls->tasks->title);
+		printf("Task Completed: [%d] %s\n", id, ls->tasks[id].title);
 	else
-		printf("Task Unchecked: [%d] %s\n", id, ls->tasks->title);
+		printf("Task Unchecked: [%d] %s\n", id, ls->tasks[id].title);
 }
 
 void deleteTask(TaskList *ls, int id) {
     if (!checkTaskExist(ls, id))
         return;
-
-    printf("Task Deleted: [%d] %s\n", id, ls->tasks[id].title);
 
     free(ls->tasks[id].title);
 
@@ -82,6 +80,26 @@ void deleteTask(TaskList *ls, int id) {
     }
 
     ls->taskCount--;
+    printf("Task Deleted: [%d] %s\n", id, ls->tasks[id].title);
+}
+
+void deleteCheckedTasks(TaskList *ls) {
+	int un_checked = 0;
+
+	for (int i = 0; i < ls->taskCount; i++) {
+		if (!ls->tasks[i].state) {
+			if (un_checked != i)
+				ls->tasks[un_checked] = ls->tasks[i];
+			ls->tasks[un_checked].id = un_checked;
+			un_checked++;
+		}
+		else
+			free(ls->tasks[i].title);
+	}
+
+	ls->taskCount = un_checked;
+
+	printf("Deleted checked tasks.\n");
 }
 
 void editTask(TaskList *ls, int id, char *new_title) {

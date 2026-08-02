@@ -26,6 +26,7 @@ void printHelp() {
 			"Check/Toggle task: task c <task id>\n"
 			"Edit task: task e <task id> \"<new task title>\"\n"
 			"Delete task: task d <task id>\n"
+			"Delete completed tasks: task dc"
 			"Clear task data: task x\n"
 		);
 }
