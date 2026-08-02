@@ -1,0 +1,20 @@
+# Object files
+*.o
+
+# Executables
+a.out
+task
+
+# Build directories
+build/
+bin/
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
