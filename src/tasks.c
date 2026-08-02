@@ -31,7 +31,7 @@ void addTask(TaskList *ls, char *title) {
 	ls->tasks[ls->taskCount] = newTask;
 	ls->taskCount++;
 
-	printf("Task Added! : [%d] %s\n", ls->taskCount, title);
+	printf("Task Added! : [%d] %s\n", newTask.id, title);
 }
 
 void displayTasks(TaskList *ls) {
