@@ -18,9 +18,16 @@ void initTasks(char *file) {
 	}
 }
 
-// TODO: find out for witch the user needs help and display result accordingly
 void printHelp() {
-	printf("Usage: task <operation>");
+	printf(
+			"CLI-TASK/TODO\nUsage: task <operation> <parameters>\n\n"
+			"Add task: task a \"<task title>\"\n"
+			"Show tasks: task s\n"
+			"Check/Toggle task: task c <task id>\n"
+			"Edit task: task e <task id> \"<new task title>\"\n"
+			"Delete task: task d <task id>\n"
+			"Clear task data: task x\n"
+		);
 }
 
 char *readLine(char *buffer, size_t *size, FILE *stream) {
