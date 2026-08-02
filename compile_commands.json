@@ -1,6 +1,6 @@
 [
   {
-    "file": "src/file.c",
+    "file": "src/main.c",
     "arguments": [
       "/usr/bin/gcc",
       "-Wall",
@@ -8,11 +8,11 @@
       "-std=c17",
       "-Iinclude",
       "-c",
-      "src/file.c",
+      "src/main.c",
       "-o",
-      "src/file.o"
+      "src/main.o"
     ],
     "directory": "/home/gassy/C/projects/My-TODO-CLI",
-    "output": "src/file.o"
+    "output": "src/main.o"
   }
 ]

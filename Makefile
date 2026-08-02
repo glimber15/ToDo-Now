@@ -1,14 +1,21 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c17 -Iinclude
 
-SRC = main.c $(wildcard src/*.c)
+SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
-app: $(OBJ)
-	$(CC) $(OBJ) -o app
+.PHONY: all run clean
 
-%.o: %.c
+all: task
+
+task: $(OBJ)
+	$(CC) $(OBJ) -o task
+
+src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
+run: task
+	./task
+
 clean:
-	rm -f $(OBJ) app
+	rm -f task $(OBJ) compile_commands.json

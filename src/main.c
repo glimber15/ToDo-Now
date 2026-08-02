@@ -3,17 +3,19 @@
 #include <string.h>
 
 #include "tasks.h"
-#include "file.h"
 
 void freeTaskMemory(TaskList *ls);
 
-int main() {
+int main(int argc, char **argv) {
+
+	// save file
 	char *file = "tasks.bin";
+	
 	// User action input
 	char usrInput = ' ';
+
 	// Task List
-	TaskList list;
-	createTaskList(file, &list);
+	TaskList list = createTaskList(file);
 	if (list.taskCount <= 0) {
 		list.size = 10;
 		list.taskCount = 0;
@@ -65,7 +67,7 @@ int main() {
 			scanf("%d", &id);
 			getchar();
 			if (!checkTaskExist(&list, id)) continue;
-			printf("Edit Task: ");
+			printf("Edit Task : %s> ", list.tasks[id].title);
 			fgets(task, sizeof(task), stdin);
 			editTask(&list, id, task);
 			saveTaskList(file, &list);
