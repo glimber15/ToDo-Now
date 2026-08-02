@@ -27,66 +27,61 @@ int main(int argc, char **argv) {
 		}
 		addTask(&list, argv[2]);
 		saveTaskList(file, &list);
+		return 0;
 	}
+	else if (strcmp(argv[1], "h") == 0) {
+		printHelp();
+		return 0;
+	}
+	else if (strcmp(argv[1], "c") == 0) {
+		if (argc < 3 || argc > 3) {
+			printHelp();
+			exit(EXIT_FAILURE);
+		}
+		
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			toggleTask(&list, id);
+			saveTaskList(file, &list);
+			return 0;
+		}
+		printHelp();
+	}
+	else if (strcmp(argv[1], "e") == 0) {
+		if (argc < 4 || argc > 4) {
+			printHelp();
+			exit(EXIT_FAILURE);
+		}
 
-	// while (1) {
-	// 	printf("----------\n");
-	// 	printf("> ");
-	// 	scanf("%c", &usrInput);
-	// 	while (getchar() != '\n');
-	// 	if (usrInput == 'A' || usrInput == 'a') {
-	// 		printf("Add Task: ");
-	// 		task = readLine(task, &task_input_size, stdin);
-	// 		addTask(&list, task);
-	// 		saveTaskList(file, &list);
-	// 	}
-	// 	else if (usrInput == 'S' || usrInput == 's') {
-	// 		displayTasks(&list);
-	// 	}
-	// 	else if (usrInput == 'H' || usrInput == 'h') {
-	// 		displayHelp();
-	// 	}
-	// 	else if (usrInput == 'C' || usrInput == 'c') {
-	// 		int id = 0;
-	// 		printf("Enter task ID:\n> ");
-	// 		scanf("%d", &id);
-	// 		toggleTask(&list, id);
-	// 		saveTaskList(file, &list);
-	// 		getchar();
-	// 	}
-	// 	else if (usrInput == 'E' || usrInput == 'e') {
-	// 		int id = 0;
-	// 		printf("Enter task ID:\n> ");
-	// 		scanf("%d", &id);
-	// 		getchar();
-	// 		if (!checkTaskExist(&list, id)) continue;
-	// 		printf("Edit Task : %s> ", list.tasks[id].title);
-	// 		fgets(task, sizeof(task), stdin);
-	// 		editTask(&list, id, task);
-	// 		saveTaskList(file, &list);
-	// 	}
-	// 	else if (usrInput == 'D' || usrInput == 'd') {
-	// 		int id = 0;
-	// 		printf("Enter task ID:\n> ");
-	// 		scanf("%d", &id);
-	// 		deleteTask(&list, id);
-	// 		saveTaskList(file, &list);
-	// 		getchar();
-	// 	}
-	// 	else if (usrInput == 'X' || usrInput == 'x') {
-	// 		if (confirm("Clear all Data: ")) {
-	// 			clearData(&list);
-	// 			saveTaskList(file, &list);
-	// 		}
-	// 	}
-	// 	else if (usrInput == 'Q' || usrInput == 'q') {
-	// 		printf("Bay :)\n");
-	// 		break;
-	// 	}
-	// 	else {
-	// 		printf("Undifined input: Type \'H\' for help.\n");
-	// 	}
-	// }
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			editTask(&list, id, argv[3]);
+			saveTaskList(file, &list);
+			return 0;
+		}
+		printHelp();
+	}
+	else if (strcmp(argv[1], "d") == 0) {
+		if (argc < 3 || argc > 3) {
+			printHelp();
+			exit(EXIT_FAILURE);
+		}
+		
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			deleteTask(&list, id);
+			saveTaskList(file, &list);
+			return 0;
+		}
+		printHelp();
+	}
+	else if (strcmp(argv[1], "x") == 0) {
+		if (confirm("Clear all Data: ")) {
+			clearData(&list);
+			saveTaskList(file, &list);
+		}
+	}
+	else printHelp();
 
 	free(list.tasks);
 

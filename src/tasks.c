@@ -40,7 +40,6 @@ void displayTasks(TaskList *ls) {
 		return;
 	}
 
-	printHead("Tasks", '-');
 	char state = ' ';
 	for (int i = 0; i < ls->taskCount; i++) {
 		switch (ls->tasks[i].state) {
@@ -54,36 +53,35 @@ void displayTasks(TaskList *ls) {
 				state = '.';
 				break;
 		}
-		printf("%d [ %c ] : %s", ls->tasks[i].id, state, ls->tasks[i].title);
+		printf("%d [ %c ] : %s\n", ls->tasks[i].id, state, ls->tasks[i].title);
 	}
 }
 
 void toggleTask(TaskList *ls, int id) {
 	if (!checkTaskExist(ls, id)) return;
 
-	// flip b/w 0 and 1
 	ls->tasks[id].state = !ls->tasks[id].state;
-	// TODO: responce
+	
+	if (ls->tasks[id].state)
+		printf("Task Completed: [%d] %s\n", id, ls->tasks->title);
+	else
+		printf("Task Unchecked: [%d] %s\n", id, ls->tasks->title);
 }
 
 void deleteTask(TaskList *ls, int id) {
-	if (!checkTaskExist(ls, id)) return;
+    if (!checkTaskExist(ls, id))
+        return;
 
-	char *task = ls->tasks[id].title;
-	for (int i = 0; i < ls->size - 1; i++) {
-		ls->tasks[i] = ls->tasks[i + 1];
-		ls->tasks[i].id--;
-	}
-	int new_size = ls->size--;
-	Task *tmp = realloc(ls->tasks, new_size * sizeof(Task));
-	if (tmp == NULL) {
-		printf("ERROR: realloc task delete failed!\n");
-		return;
-	}
-	ls->tasks = tmp;
-	ls->size = new_size;
-	ls->taskCount--;
-	printf("Task Deleted: [%d] : %s", id, task);
+    printf("Task Deleted: [%d] %s\n", id, ls->tasks[id].title);
+
+    free(ls->tasks[id].title);
+
+    for (int i = id; i < ls->taskCount - 1; i++) {
+        ls->tasks[i] = ls->tasks[i + 1];
+        ls->tasks[i].id = i;
+    }
+
+    ls->taskCount--;
 }
 
 void editTask(TaskList *ls, int id, char *new_title) {

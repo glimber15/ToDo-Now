@@ -23,17 +23,6 @@ void printHelp() {
 	printf("Usage: task <operation>");
 }
 
-void displayHelp() {
-	printHead("Helps", '-');
-	printf("H : Show this again.\n");
-	printf("Q : Quit.\n");
-	printf("A : Add a new task.\n");
-	printf("S : Show tasks.\n");
-	printf("C : Toggle task.\n");
-	printf("E : Edit task.\n");
-	printf("D : Delete task.\n");
-}
-
 char *readLine(char *buffer, size_t *size, FILE *stream) {
 	size_t len = 0;
 	while (fgets(buffer + len, *size - len, stream)) {
@@ -51,6 +40,12 @@ char *readLine(char *buffer, size_t *size, FILE *stream) {
 		buffer = tmp;
 	}
 	return buffer;
+}
+
+bool parseToNum(const char *str, float *result) {
+	char *end;
+	*result = strtod(str, &end);
+	return *end == '\0';
 }
 
 void printHead(char *text, char dec) {
@@ -82,7 +77,7 @@ bool checkTaskExist(TaskList *ls, int id) {
 		return false;
 	}
 	if (id >= ls->taskCount) {
-		printf("Task does not exist. Use \'S\' to show tasks.\n");
+		printHelp();
 		return false;
 	}
 	return true;
@@ -91,7 +86,7 @@ bool checkTaskExist(TaskList *ls, int id) {
 bool confirm(char *dialog) {
 	char input;
 	printf("%s", dialog);
-	printf("(Y/N)?");
+	printf("(y/N)?");
 	scanf("%c", &input);
 	getchar();
 	if (input == 'Y' || input == 'y')
@@ -99,7 +94,7 @@ bool confirm(char *dialog) {
 	else if (input == 'N' || input == 'n')
 		return false;
 	else {
-		printf("Undifined input: Type \'H\' for help.\n");
+		printHelp();
 		return false;
 	}
 }

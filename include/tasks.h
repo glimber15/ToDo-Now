@@ -32,11 +32,12 @@ void createTaskList(char *file_name, TaskList *ls);
 // helper
 void initTasks(char *file);
 char *readLine(char *buffer, size_t *size, FILE *stream);
+bool parseToNum(const char *str, float *result);
+bool checkTaskExist(TaskList *ls, int id);
+
+bool confirm(char *dialog);
 void printHead(char *text, char dec);
 void printHelp();
-void displayHelp();
-bool checkTaskExist(TaskList *ls, int id);
-bool confirm(char *dialog);
 
 extern TaskList list;
 
