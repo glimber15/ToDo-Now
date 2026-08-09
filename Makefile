@@ -1,21 +1,22 @@
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c17 -Iinclude
+LDLIBS = -lsqlite3
 
 SRC = $(wildcard src/*.c)
 OBJ = $(SRC:.c=.o)
 
 .PHONY: all run clean
 
-all: task
+all: tsk
 
-task: $(OBJ)
-	$(CC) $(OBJ) -o task
+tsk: $(OBJ)
+	$(CC) $(OBJ) -o tsk $(LDLIBS)
 
 src/%.o: src/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
-run: task
-	./task
+run: tsk
+	./tsk
 
 clean:
-	rm -f task $(OBJ) compile_commands.json
+	rm -f tsk $(OBJ) compile_commands.json

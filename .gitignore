@@ -3,21 +3,13 @@
 
 # Executables
 a.out
-task
+tsk
 
 # Build directories
 build/
 bin/
-
-# Editor files
-.vscode/
-.idea/
-*.swp
-*~
-
-# OS files
-.DS_Store
-Thumbs.db
+compile_commands.json
 
 #saves
 tasks.bin
+ideas.txt
