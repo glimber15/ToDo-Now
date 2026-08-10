@@ -28,23 +28,19 @@ int main(int argc, char **argv) {
 		displayTasks(task_db);
 		return 0;
 	}
-	// else if (strcmp(argv[1], "help") == 0) {
-	// 	printHelp();
-	// 	return 0;
-	// }
-	// else if (strcmp(argv[1], "check") == 0) {
-	// 	if (argc < 3 || argc > 3) {
-	// 		printHelp();
-	// 		exit(EXIT_FAILURE);
-	// 	}
+	else if (strcmp(argv[1], "check") == 0) {
+		if (argc < 3 || argc > 3) {
+			printHelp();
+			exit(EXIT_FAILURE);
+		}
 		
-	// 	float id;
-	// 	if (parseToNum(argv[2], &id)) {
-	// 		toggleTask(&list, id);
-	// 		return 0;
-	// 	}
-	// 	printHelp();
-	// }
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			toggleTask(task_db, id);
+			return 0;
+		}
+		printHelp();
+	}
 	// else if (strcmp(argv[1], "edit") == 0) {
 	// 	if (argc < 4 || argc > 4) {
 	// 		printHelp();
@@ -82,6 +78,10 @@ int main(int argc, char **argv) {
 	// 		return 0;
 	// 	}
 	// }
+	else if (strcmp(argv[1], "help") == 0) {
+		printHelp();
+		return 0;
+	}
 	else printHelp();
 
 	sqlite3_close(task_db);

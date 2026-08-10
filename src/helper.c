@@ -35,11 +35,11 @@ void printHelp() {
 // 	return buffer;
 // }
 
-// bool parseToNum(const char *str, float *result) {
-// 	char *end;
-// 	*result = strtod(str, &end);
-// 	return *end == '\0';
-// }
+bool parseToNum(const char *str, float *result) {
+	char *end;
+	*result = strtod(str, &end);
+	return *end == '\0';
+}
 
 // void printHead(char *text, char dec) {
 // 	int t_len = 0;

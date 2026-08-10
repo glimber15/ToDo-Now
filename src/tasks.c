@@ -56,10 +56,7 @@ void addTask(sqlite3 *db, const char *title) {
 
 	sqlite3_finalize(stmt);
 
-	// TODO: show the task title also
-	printf("Added task: %lld\n", sqlite3_last_insert_rowid(db));
-
-	return;
+	printf("Added task: %lld '%s'\n", sqlite3_last_insert_rowid(db), title);
 }
 
 void displayTasks(sqlite3 *db) {
@@ -84,16 +81,46 @@ void displayTasks(sqlite3 *db) {
 	sqlite3_finalize(stmt);
 }
 
-// void toggleTask(TaskList *ls, int id) {
-// 	if (!checkTaskExist(ls, id)) return;
+// TODO: Move or archive completed tasks
+void toggleTask(sqlite3 *db, int id) {
+	const char *sql = 
+		"UPDATE tasks "
+		"SET state = NOT state "
+		"WHERE id = ? "
+		"RETURNING title, state;";
+	sqlite3_stmt *stmt;
 
-// 	ls->tasks[id].state = !ls->tasks[id].state;
-	
-// 	if (ls->tasks[id].state)
-// 		printf("Task Completed: [%d] %s\n", id, ls->tasks[id].title);
-// 	else
-// 		printf("Task Unchecked: [%d] %s\n", id, ls->tasks[id].title);
-// }
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		return;
+	}
+
+	if (sqlite3_bind_int(stmt, 1, id) != SQLITE_OK) {
+		fprintf(stderr, "Failed to bind task id\n");
+		return;
+	}
+
+	int rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		const char *title = (const char *)sqlite3_column_text(stmt, 0);
+		int state = sqlite3_column_int(stmt, 1);
+
+		if (state)
+			printf("Task Complete: %d - '%s'", id, title);
+		else
+			printf("Task Unchecked: %d - '%s'", id, title);
+
+		sqlite3_finalize(stmt);
+		return;
+	}
+	if (rc == SQLITE_DONE)
+		fprintf(stderr, "Task %d does not exist\n", id);
+	else {
+		fprintf(stderr, "Failed to update task state: %s\n", sqlite3_errmsg(db));
+	}
+
+	sqlite3_finalize(stmt);
+}
 
 // void deleteTask(TaskList *ls, int id) {
 //     if (!checkTaskExist(ls, id))
