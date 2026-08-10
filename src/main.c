@@ -9,7 +9,7 @@ int main(int argc, char **argv) {
 
 	if (argc < 2) {
 		printHelp();
-		exit(EXIT_FAILURE);
+		return 1;
 	}
 
 	sqlite3 *task_db = NULL;
@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 	if (strcmp(argv[1], "add") == 0) {
 		if (argc < 3 || argc > 3) {
 			printHelp();
-			exit(EXIT_FAILURE);
+			return 1;
 		}
 		addTask(task_db, argv[2]);
 		return 0;
@@ -31,7 +31,7 @@ int main(int argc, char **argv) {
 	else if (strcmp(argv[1], "check") == 0) {
 		if (argc < 3 || argc > 3) {
 			printHelp();
-			exit(EXIT_FAILURE);
+			return 1;
 		}
 		
 		float id;
@@ -41,28 +41,28 @@ int main(int argc, char **argv) {
 		}
 		printHelp();
 	}
+	else if (strcmp(argv[1], "del") == 0) {
+		if (argc < 3 || argc > 3) {
+			printHelp();
+			return 1;
+		}
+		
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			deleteTask(task_db, id);
+			return 0;
+		}
+		printHelp();
+	}
 	// else if (strcmp(argv[1], "edit") == 0) {
 	// 	if (argc < 4 || argc > 4) {
 	// 		printHelp();
-	// 		exit(EXIT_FAILURE);
+	// 		return 1;
 	// 	}
 
 	// 	float id;
 	// 	if (parseToNum(argv[2], &id)) {
 	// 		editTask(&list, id, argv[3]);
-	// 		return 0;
-	// 	}
-	// 	printHelp();
-	// }
-	// else if (strcmp(argv[1], "del") == 0) {
-	// 	if (argc < 3 || argc > 3) {
-	// 		printHelp();
-	// 		exit(EXIT_FAILURE);
-	// 	}
-		
-	// 	float id;
-	// 	if (parseToNum(argv[2], &id)) {
-	// 		deleteTask(&list, id);
 	// 		return 0;
 	// 	}
 	// 	printHelp();

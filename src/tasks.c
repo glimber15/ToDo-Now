@@ -68,7 +68,15 @@ void displayTasks(sqlite3 *db) {
 		return;
 	}
 
-	while (sqlite3_step(stmt) == SQLITE_ROW) {
+	int rc = sqlite3_step(stmt);
+
+	if (rc == SQLITE_DONE) {
+		printf("There are no tasks!\n");
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	while (rc == SQLITE_ROW) {
 		int id = sqlite3_column_int(stmt, 0);
 		const char *title = (char *)sqlite3_column_text(stmt, 1);
 		int state = sqlite3_column_int(stmt, 2);
@@ -76,6 +84,8 @@ void displayTasks(sqlite3 *db) {
 		char symbol = state ? '#' : ' ';
 
 		printf("%d [%c] %s\n", id, symbol, title);
+
+		rc = sqlite3_step(stmt);
 	}
 
 	sqlite3_finalize(stmt);
@@ -106,13 +116,14 @@ void toggleTask(sqlite3 *db, int id) {
 		int state = sqlite3_column_int(stmt, 1);
 
 		if (state)
-			printf("Task Complete: %d - '%s'", id, title);
+			printf("Task Complete: %d - '%s'\n", id, title);
 		else
-			printf("Task Unchecked: %d - '%s'", id, title);
+			printf("Task Unchecked: %d - '%s'\n", id, title);
 
 		sqlite3_finalize(stmt);
 		return;
 	}
+
 	if (rc == SQLITE_DONE)
 		fprintf(stderr, "Task %d does not exist\n", id);
 	else {
@@ -122,20 +133,41 @@ void toggleTask(sqlite3 *db, int id) {
 	sqlite3_finalize(stmt);
 }
 
-// void deleteTask(TaskList *ls, int id) {
-//     if (!checkTaskExist(ls, id))
-//         return;
+void deleteTask(sqlite3 *db, int id) {
+	const char *sql = 
+		"DELETE FROM tasks "
+		"WHERE id = ? "
+		"RETURNING title";
+	sqlite3_stmt *stmt;
 
-//     free(ls->tasks[id].title);
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		return;
+	}
 
-//     for (int i = id; i < ls->taskCount - 1; i++) {
-//         ls->tasks[i] = ls->tasks[i + 1];
-//         ls->tasks[i].id = i;
-//     }
+	if (sqlite3_bind_int(stmt, 1, id) != SQLITE_OK) {
+		fprintf(stderr, "Failed to bind task id\n");
+		return;
+	}
 
-//     ls->taskCount--;
-//     printf("Task Deleted: [%d] %s\n", id, ls->tasks[id].title);
-// }
+	int rc = sqlite3_step(stmt);
+	if (rc == SQLITE_ROW) {
+		const char *title = (const char *)sqlite3_column_text(stmt, 0);
+		
+		printf("Task deleted: %d - '%s'\n", id, title);
+
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	if (rc == SQLITE_DONE)
+		fprintf(stderr, "Task %d does not exist\n", id);
+	else {
+		fprintf(stderr, "Failed to delete task: %s\n", sqlite3_errmsg(db));
+	}
+
+	sqlite3_finalize(stmt);
+}
 
 // void deleteCheckedTasks(TaskList *ls) {
 // 	int un_checked = 0;
