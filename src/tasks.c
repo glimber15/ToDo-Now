@@ -188,23 +188,41 @@ void deleteTask(sqlite3 *db, int id) {
 // 	printf("Deleted checked tasks.\n");
 // }
 
-// void editTask(TaskList *ls, int id, char *new_title) {
-// 	char *og_title = malloc(strlen(ls->tasks[id].title) + 1);
-// 	if (og_title == NULL) {
-// 		printf("ERROR: malloc edit task failed! (tmp title)");
-// 		return;
-// 	}
-// 	strcpy(og_title, ls->tasks[id].title);
-// 	char *tmp = realloc(ls->tasks[id].title, strlen(new_title) + 1);
-// 	if (tmp == NULL) {
-// 		printf("ERROR: realloc task edit failed!\n");
-// 		return;
-// 	}
-// 	ls->tasks[id].title = tmp;
-// 	strcpy(ls->tasks[id].title, new_title);
-// 	og_title[strcspn(og_title, "\n")] = '\0';
-// 	printf("Task Edited: %s -> %s", og_title, new_title);
-// }
+// TODO: display previous task and new task in response
+void editTask(sqlite3 *db, int id, const char *new_title) {
+	const char *sql = 
+		"UPDATE tasks "
+		"SET title = ? "
+		"WHERE id = ?;";
+	sqlite3_stmt *stmt;
+
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		return;
+	}
+
+	if (sqlite3_bind_text(stmt, 1, new_title, -1, SQLITE_TRANSIENT) != SQLITE_OK) {
+		fprintf(stderr, "Failed to bind task new title\n");
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	if (sqlite3_bind_int(stmt, 2, id) != SQLITE_OK) {
+		fprintf(stderr, "Failed to bind task id\n");
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	if (sqlite3_step(stmt) != SQLITE_DONE) {
+		fprintf(stderr, "Failed to edit task: %s\n", sqlite3_errmsg(db));
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	printf("Task edited: %d - '%s'\n", id, new_title);
+
+	sqlite3_finalize(stmt);
+}
 
 // void clearData(TaskList *ls) {
 // 	Task *tmp = realloc(ls->tasks, sizeof(Task));

@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
@@ -11,7 +12,7 @@ void printHelp() {
 			"Check/Toggle task: task c <task id>\n"
 			"Edit task: task e <task id> \"<new task title>\"\n"
 			"Delete task: task d <task id>\n"
-			"Delete completed tasks: task dc"
+			"Delete completed tasks: task dc\n"
 			"Clear task data: task x\n"
 		);
 }
@@ -62,18 +63,6 @@ bool parseToNum(const char *str, float *result) {
 // 	printf("\n");
 // 	for (int i = 0; i <= r_len; i++) printf("%c", dec);
 // 	printf("\n");
-// }
-
-// bool checkTaskExist(TaskList *ls, int id) {
-// 	if (ls->taskCount == 0) {
-// 		printf("You have no tasks.\n");
-// 		return false;
-// 	}
-// 	if (id >= ls->taskCount) {
-// 		printHelp();
-// 		return false;
-// 	}
-// 	return true;
 // }
 
 // bool confirm(char *dialog) {
