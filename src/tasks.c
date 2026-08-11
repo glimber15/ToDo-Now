@@ -224,15 +224,15 @@ void editTask(sqlite3 *db, int id, const char *new_title) {
 	sqlite3_finalize(stmt);
 }
 
-// void clearData(TaskList *ls) {
-// 	Task *tmp = realloc(ls->tasks, sizeof(Task));
-// 	if (tmp == NULL) {
-// 		printf("ERROR: realloc task clear failed!\n");
-// 		return;
-// 	}
-// 	ls->tasks = tmp;
-// 	ls->size = 10;
-// 	ls->taskCount = 0;
-// 	printf("Task Data Cleared!\n");
-// }
+void clearData(sqlite3 *db) {
+	const char *sql = "DELETE FROM tasks;";
+	char *err_msg = NULL;
 
+	if (sqlite3_exec(db, sql, NULL, NULL, &err_msg) != SQLITE_OK) {
+		fprintf(stderr, "Failed to clear tasks\n");
+		free(err_msg);
+		return;
+	}
+
+	printf("Tasks data cleared!\n");
+}

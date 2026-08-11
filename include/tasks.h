@@ -26,12 +26,11 @@ void toggleTask(sqlite3 *db, int id);
 void deleteTask(sqlite3 *db, int id);
 // void deleteCheckedTasks(sqlite3 *db);
 void editTask(sqlite3 *db, int id, const char *new_title);
-// void clearData(sqlite3 *db);
+void clearData(sqlite3 *db);
 
 // helper
 bool parseToNum(const char *str, float *result);
-// bool confirm(const char *dialog);
-// void printHead(char *text, char dec);
+bool confirm(const char *dialog);
 void printHelp();
 
 #endif

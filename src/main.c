@@ -85,12 +85,15 @@ int main(int argc, char **argv) {
 	// 	deleteCheckedTasks(&list);
 	// 	return 0;
 	// }
-	// else if (strcmp(argv[1], "clear") == 0) {
-	// 	if (confirm("Clear all Data: ")) {
-	// 		clearData(&list);
-	// 		return 0;
-	// 	}
-	// }
+	//
+	// Clear all task data
+	//
+	else if (strcmp(argv[1], "clear") == 0) {
+		if (confirm("Clear all Data: ")) {
+			clearData(task_db);
+			return 0;
+		}
+	}
 	else if (strcmp(argv[1], "help") == 0) {
 		printHelp();
 		return 0;
