@@ -1,4 +1,5 @@
 #include <sqlite3.h>
+#include <stdio.h>
 #include <string.h>
 
 #include "tasks.h"
@@ -10,13 +11,25 @@ int main(int argc, char **argv) {
 		return 1;
 	}
 
+	// Open db
 	sqlite3 *task_db = NULL;
-	initTasks(&task_db);
+	createDb(&task_db);
+	createTasksTable(task_db);
 
+	//
+	// Initialize tasks .tsk dir
+	//
+	if (strcmp(argv[1], "init") == 0) {
+		if (argc < 2 || argc > 2) {
+			printHelp();
+			return 1;
+		}
+		initTasks();
+	}
 	//
 	// Add Task
 	//
-	if (strcmp(argv[1], "add") == 0) {
+	else if (strcmp(argv[1], "add") == 0) {
 		if (argc < 3 || argc > 3) {
 			printHelp();
 			return 1;

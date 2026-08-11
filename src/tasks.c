@@ -1,10 +1,11 @@
+#include <asm-generic/errno-base.h>
+#include <errno.h>
 #include <sqlite3.h>
 #include <stdio.h>
-#include <stdlib.h>
+#include <sys/stat.h>
 #include "tasks.h"
 
 void createDb(sqlite3 **db) {
-	// TODO: create .tsk folder if not found
 	int rc = sqlite3_open(".tsk/tasks.db", db);
 	if (rc != SQLITE_OK) {
 		fprintf(stderr, "Cannot open database: %s\n", sqlite3_errmsg(*db));
@@ -26,12 +27,15 @@ void createTasksTable(sqlite3 *db) {
 		fprintf(stderr, "SQL error: %s\n", err_msg);
 	}
 
-	free(err_msg);
+	sqlite3_free(err_msg);
 }
 
-void initTasks(sqlite3 **db) {
-	createDb(db);
-	createTasksTable(*db);
+// TODO: Silence errors when intializing
+void initTasks() {
+	if (mkdir(".tsk", 0755) == -1 && errno != EEXIST) {
+		perror("Failed to create dir '.tsk'!");
+		return;
+	}
 }
 
 void addTask(sqlite3 *db, const char *title) {
@@ -83,7 +87,7 @@ void displayTasks(sqlite3 *db) {
 
 		char symbol = state ? '#' : ' ';
 
-		printf("%d [%c] %s\n", id, symbol, title);
+		printf(" %d [%c] %s\n", id, symbol, title);
 
 		rc = sqlite3_step(stmt);
 	}
@@ -230,7 +234,7 @@ void clearData(sqlite3 *db) {
 
 	if (sqlite3_exec(db, sql, NULL, NULL, &err_msg) != SQLITE_OK) {
 		fprintf(stderr, "Failed to clear tasks\n");
-		free(err_msg);
+		sqlite3_free(err_msg);
 		return;
 	}
 

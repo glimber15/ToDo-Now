@@ -16,7 +16,7 @@ typedef struct {
 //database
 void createDb(sqlite3 **db);
 void createTasksTable(sqlite3 *db);
-void initTasks(sqlite3 **db);
+void initTasks();
 
 
 // tasks
