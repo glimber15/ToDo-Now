@@ -1,27 +1,26 @@
 #ifndef TASKS_H
 #define TASKS_H
 
-#include <stddef.h>
-#include <stdbool.h>
 #include <sqlite3.h>
+#include <stdbool.h>
+#include <stddef.h>
 
 extern sqlite3 *task_db;
 
 typedef struct {
-	int id;
-	char *title;
-	int state;
+  int id;
+  char *title;
+  int state;
 } Task;
 
-//database
+// database
 void createDb(sqlite3 **db);
 void createTasksTable(sqlite3 *db);
 void initTasks();
 
-
 // tasks
 void addTask(sqlite3 *db, const char *title);
-void displayTasks(sqlite3 *db);
+void displayTasks(sqlite3 *db, int state, const char *title);
 void toggleTask(sqlite3 *db, int id);
 void deleteTask(sqlite3 *db, int id);
 // void deleteCheckedTasks(sqlite3 *db);
