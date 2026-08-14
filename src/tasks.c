@@ -30,7 +30,7 @@ void createTasksTable(sqlite3 *db) {
 	sqlite3_free(err_msg);
 }
 
-// TODO: Silence errors when intializing
+// TODO: Silence errors when intializing 	
 void initTasks() {
 	if (mkdir(".tsk", 0755) == -1 && errno != EEXIST) {
 		perror("Failed to create dir '.tsk'!");
@@ -63,8 +63,9 @@ void addTask(sqlite3 *db, const char *title) {
 	printf("Added task: %lld '%s'\n", sqlite3_last_insert_rowid(db), title);
 }
 
+// TODO: display only incomplete tasks
 void displayTasks(sqlite3 *db) {
-	const char *sql = "SELECT * FROM tasks ORDER BY id;";
+	const char *sql = "SELECT * FROM tasks WHERE state = 0 ORDER BY id;";
 	sqlite3_stmt *stmt;
 
 	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
