@@ -74,12 +74,14 @@ int main(int argc, char **argv) {
 	//
 	// Show tasks
 	//
-	// TODO: add some parameters to format shown task list
 	else if (strcmp(argv[1], "show") == 0) {
 		displayTasks(task_db, 0, "Tasks");
 		if (argc > 2 || argc < 2) {
 			if (strcmp(argv[2], "-c") == 0)
 				displayTasks(task_db, 1, "Completed");
+			else if (strcmp(argv[2], "-d") == 0)
+				// TODO: dont show descriptions
+				return 1;
 			else
 				printHelp();
 		}

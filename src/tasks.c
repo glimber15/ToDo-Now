@@ -98,10 +98,14 @@ void displayTasks(sqlite3 *db, int state, const char *title) {
 		int id = sqlite3_column_int(stmt, 0);
 		const char *title = (char *)sqlite3_column_text(stmt, 1);
 		int state = sqlite3_column_int(stmt, 2);
+		const char *desc = (char *)sqlite3_column_text(stmt, 3);
 
 		char symbol = state ? '#' : ' ';
 
-		printf("%3d [%c] %s\n", id, symbol, title);
+		// TODO: only show desc if it has description
+		printf("%3d [%c]\n%s\n", id, symbol, title);
+		if (desc)
+			printf(" - %s\n\n", desc);
 
 		rc = sqlite3_step(stmt);
 	}
