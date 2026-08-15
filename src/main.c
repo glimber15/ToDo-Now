@@ -39,7 +39,7 @@ int main(int argc, char **argv) {
 
 	snprintf(db_path, sizeof(db_path), "%s/.tsk/tasks.db", root);
 
-	if (createOpenDb(&task_db, db_path))
+	if (!createOpenDb(&task_db, db_path))
 		return 1;
 
 	if (!createTasksTable(task_db))
