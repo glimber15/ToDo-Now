@@ -8,4 +8,4 @@
 * `tsk check "task id"` : Complete a task
 * `tsk edit "task id" "new task title"` : Edit a task
 * `tsk del "task id"` : Remove a task
-* `tsk clear` : Clear all task data
+* `tsk kaboom` : Unintialize tsk from your project

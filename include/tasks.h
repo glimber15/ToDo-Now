@@ -23,7 +23,6 @@ void addTask(sqlite3 *db, const char *title);
 void displayTasks(sqlite3 *db, int state, const char *title);
 void toggleTask(sqlite3 *db, int id);
 void deleteTask(sqlite3 *db, int id);
-// void deleteCheckedTasks(sqlite3 *db);
 void editTask(sqlite3 *db, int id, const char *new_title);
 void clearData(sqlite3 *db);
 
