@@ -2,10 +2,16 @@
 > A todo app which lives im your project. It's kinda like your TODO.md but more cli-y and only show you whats is important.
 
 ## Usage
-* `tsk add "task title"` : Add a task
-* `tsk show` : Show the task list
-* `tsk help` : Show help stuff
-* `tsk check "task id"` : Complete a task
-* `tsk edit "task id" "new task title"` : Edit a task
-* `tsk del "task id"` : Remove a task
-* `tsk kaboom` : Unintialize tsk from your project
+`"usage                      tsk <action> <params...>\n\n"
+"actions:\n"
+"  init                     Initialize tasks in project dir\n"
+"  add 'task title'         Add a task\n"
+"  desc id 'description'    Add description to a task\n"
+"  show                     Show tasks pending\n"
+"  show -c                  Show completed tasks also\n"
+"  tick id                  Complete/toggle a task\n"
+"  edit id 'new title'      Edit a task title\n"
+"  del id                   Delete a task\n"
+"  kaboom                   Uninitaialize tasks\n"`
+
+> Also using `tsk show >> todo.txt` can give you a task file
