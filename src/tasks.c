@@ -29,6 +29,42 @@ void addTask(sqlite3 *db, const char *title) {
 	printf("Added task: [%lld] '%s'\n", sqlite3_last_insert_rowid(db), title);
 }
 
+void addTaskDesc(sqlite3 *db, const char *desc, int id) {
+	const char *sql =
+		"UPDATE tasks SET "
+		"description = ? "
+		"WHERE id = ?;";
+	sqlite3_stmt *stmt;
+
+	if (sqlite3_prepare_v2(db, sql, -1, &stmt, NULL) != SQLITE_OK) {
+		fprintf(stderr, "Failed to prepare statement: %s\n", sqlite3_errmsg(db));
+		return;
+	}
+
+	if (sqlite3_bind_text(stmt, 1, desc, -1, SQLITE_TRANSIENT) != SQLITE_OK) {
+		fprintf(stderr, "Falied to bind description!\n");
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	if (sqlite3_bind_int(stmt, 2, id) != SQLITE_OK) {
+		fprintf(stderr, "Failed to bind task id\n");
+		sqlite3_finalize(stmt);
+		return;
+	}
+
+	int rc = sqlite3_step(stmt);
+
+	if (rc != SQLITE_DONE) {
+		fprintf(stderr, "Failed to update task description: %s\n", sqlite3_errmsg(db));
+		sqlite3_finalize(stmt);
+	}
+
+	printf("description added to task: [%d] '%s'", id, desc);
+
+	sqlite3_finalize(stmt);
+}
+
 void displayTasks(sqlite3 *db, int state, const char *title) {
 	const char *sql =
 		"SELECT * FROM tasks "

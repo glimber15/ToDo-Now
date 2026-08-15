@@ -57,6 +57,21 @@ int main(int argc, char **argv) {
 		return 0;
 	}
 	//
+	// Add description
+	//
+	else if (strcmp(argv[1], "desc") == 0) {
+		if (argc < 4 || argc > 4) {
+			printHelp();
+			return 1;
+		}
+		float id;
+		if (parseToNum(argv[2], &id)) {
+			addTaskDesc(task_db, argv[3], id);
+			return 0;
+		}
+		printHelp();
+	}
+	//
 	// Show tasks
 	//
 	// TODO: add some parameters to format shown task list

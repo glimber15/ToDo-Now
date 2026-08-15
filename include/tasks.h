@@ -8,18 +8,20 @@
 extern sqlite3 *task_db;
 
 typedef struct {
-  int id;
-  char *title;
-  int state;
+	int id;
+	char *title;
+	int state;
+	char *desc;
 } Task;
 
 // database
-void createDb(sqlite3 **db);
-void createTasksTable(sqlite3 *db);
+bool createOpenDb(sqlite3 **db, const char *db_path);
+bool createTasksTable(sqlite3 *db);
 void initTasks();
 
 // tasks
 void addTask(sqlite3 *db, const char *title);
+void addTaskDesc(sqlite3 *db, const char *desc, int id);
 void displayTasks(sqlite3 *db, int state, const char *title);
 void toggleTask(sqlite3 *db, int id);
 void deleteTask(sqlite3 *db, int id);
@@ -30,5 +32,6 @@ void clearData(sqlite3 *db);
 bool parseToNum(const char *str, float *result);
 bool confirm(const char *dialog);
 void printHelp();
+bool findProjectDir(char *root, size_t size);
 
 #endif
