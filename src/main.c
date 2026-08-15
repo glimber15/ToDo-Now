@@ -6,6 +6,8 @@
 
 #include "tasks.h"
 
+#define PATH_MAX 4096
+
 int main(int argc, char **argv) {
 
 	if (argc < 2) {
@@ -14,7 +16,7 @@ int main(int argc, char **argv) {
 	}
 
 	//
-	// Initialize tasks .tsk dir
+	// Initialize/create tasks .tsk dir
 	//
 	if (strcmp(argv[1], "init") == 0) {
 		if (argc < 2 || argc > 2) {
@@ -27,15 +29,21 @@ int main(int argc, char **argv) {
 
 	// Open db
 	sqlite3 *task_db = NULL;
-	struct stat st;
-	if (stat(".tsk", &st) == 0 && S_ISDIR(st.st_mode)) {
-		createDb(&task_db);
-		createTasksTable(task_db);
+	char root[PATH_MAX];
+	char db_path[PATH_MAX];
+
+	if (!findProjectDir(root, sizeof(root))) {
+		fprintf(stderr, "Not a tsk project!\n");
+		return 1;
 	}
-	else {
-		printf("tsk not initialized, use: tsk init\n\n");
-		printHelp();
-	}
+
+	snprintf(db_path, sizeof(db_path), "%s/.tsk/tasks.db", root);
+
+	if (createOpenDb(&task_db, db_path))
+		return 1;
+
+	if (!createTasksTable(task_db))
+		return 1;
 
 	//
 	// Add Task
